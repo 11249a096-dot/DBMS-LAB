@@ -1,0 +1,65 @@
+CREATE TABLE dept (
+  deptno NUMBER(2) PRIMARY KEY,
+  dname  VARCHAR2(20)
+);
+
+CREATE TABLE emp (
+  empno  NUMBER(4) PRIMARY KEY,
+  ename  VARCHAR2(20) NOT NULL,
+  job    VARCHAR2(15),
+  sal    NUMBER(8,2),
+  deptno NUMBER(2) REFERENCES dept(deptno)
+);
+
+CREATE TABLE emp_audit (
+  audit_id NUMBER GENERATED ALWAYS AS IDENTITY,
+  empno    NUMBER,
+  action   VARCHAR2(10),
+  old_sal  NUMBER,
+  new_sal  NUMBER,
+  changed_on DATE DEFAULT SYSDATE
+);
+
+INSERT INTO dept VALUES (10, 'ACCOUNTING');
+INSERT INTO dept VALUES (20, 'RESEARCH');
+INSERT INTO dept VALUES (30, 'SALES');
+
+INSERT INTO emp VALUES (101, 'SMITH',  'CLERK',    8000, 20);
+INSERT INTO emp VALUES (102, 'ALLEN',  'SALESMAN', 15000, 30);
+INSERT INTO emp VALUES (103, 'WARD',   'SALESMAN', 12500, 30);
+INSERT INTO emp VALUES (104, 'JONES',  'MANAGER',  29750, 20);
+INSERT INTO emp VALUES (105, 'KING',   'PRESIDENT', 50000, 10);
+COMMIT;
+
+PL/SQL block structure
+DECLARE
+  -- variables, constants, cursors
+BEGIN
+  -- executable statements
+EXCEPTION
+  -- error handlers
+END;
+/
+
+a)	Conditional Blocks
+Aim: To use IF, IF-ELSIF and CASE statements in PL/SQL.
+Theory: PL/SQL provides IF-THEN-ELSE, IF-THEN-ELSIF for range checks, simple CASE for equality tests on one value, and searched CASE for arbitrary conditions. CASE can also be used as an expression.
+
+
+
+Program 1.1: IF-ELSIF (grade by salary)
+
+DECLARE
+  v_sal  emp.sal%TYPE;
+  v_name emp.ename%TYPE;
+BEGIN
+  SELECT ename, sal INTO v_name, v_sal FROM emp WHERE empno = 102;
+
+  IF v_sal >= 30000 THEN
+    DBMS_OUTPUT.PUT_LINE(v_name || ': Grade A');
+  ELSIF v_sal >= 10000 THEN
+    DBMS_OUTPUT.PUT_LINE(v_name || ': Grade B');
+  ELSE
+    DBMS_OUTPUT.PUT_LINE(v_name || ': Grade C');
+  END IF;
+END;
